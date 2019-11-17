@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <sys/time.h>
 
+/* This little program shows the way random was generated in the
+main program */
+
 int main(void)
 {
 	int test[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};

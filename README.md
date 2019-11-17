@@ -12,4 +12,4 @@ The MCTS algorithm is based on the Law of Large Numbers, it finds the best move 
 
                                         --------------------
 
-You can play against the algoritm by running make in the principal directory
+You can play against the algoritm by running make in the principal directory.

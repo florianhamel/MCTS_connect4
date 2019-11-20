@@ -8,7 +8,7 @@ double	UCB1(t_node *root, t_node *node)
 	
 	if (node->nbExp == 0)
 		return (+INFINITY);
-	const_expl = 100; // exploration constant is empirically determined
+	const_expl = 125; // exploration constant is empirically determined
 	av_val = (node->value / node->nbExp);
 	expl_val = const_expl * sqrt(log(root->nbExp) / node->nbExp);
 	return (av_val + expl_val);
@@ -87,6 +87,7 @@ void	back_propagation(t_node *node, int ret)
 int		mcts(t_node *root, int iter) // return the best move
 {
 	t_node  *bestNode;
+	char	**board_cpy;
 	int     bestMove;
 	int     ret;
 
@@ -96,23 +97,26 @@ int		mcts(t_node *root, int iter) // return the best move
 		return (bestMove);
 	}
 	bestNode = selection(root, root);
+	board_cpy = board_dup(bestNode->board);
 	if (win(bestNode->board, get_last_move(bestNode))) // proven win/loss
 	{
 		if (get_skin(bestNode->board, get_last_move(bestNode)) == 'o')
 			bestNode->parent->value = -INFINITY;
-		ret = simulation(board_dup(bestNode->board), get_last_move(bestNode));
+		ret = simulation(board_cpy, get_last_move(bestNode));
 		back_propagation(bestNode, ret);
 	}
 	else if (bestNode->nbExp == 0) // not explored yet
 	{
-		ret = simulation(board_dup(bestNode->board), get_last_move(bestNode));
+		ret = simulation(board_cpy, get_last_move(bestNode));
 		back_propagation(bestNode, ret);
 	}
 	else // expand the node and simulate from its first child
 	{
 		expand(bestNode, get_player(bestNode->board, get_last_move(bestNode)));
-		ret = simulation(board_dup(bestNode->children[0]->board), get_last_move(bestNode->children[0]));
+		board_cpy = board_dup(bestNode->children[0]->board);
+		ret = simulation(board_cpy, get_last_move(bestNode->children[0]));
 		back_propagation(bestNode, ret);
 	}
+	free(board_cpy);
 	return (mcts(root, iter - 1));
 }

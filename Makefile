@@ -14,12 +14,15 @@ CC		=	gcc
 
 CFLAGS	=	-Wall -Wextra -Werror
 
-DEBUG	=	-g3 -fsanitize=address --analyze
+DEBUG	=	-g3 -fsanitize=address
 
 all		:	$(NAME)
 
 $(NAME)	:	$(OBJS)
 			$(CC) $(OBJS) -o $(NAME)
+
+debug	:	$(OBJS)
+			$(CC) $(OBJS) -o $(NAME) $(DEBUG)
 
 %.o		:	%.c
 			$(CC) $(CFLAGS) -I$(DIR_H) -c $< -o $@

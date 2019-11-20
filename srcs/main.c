@@ -1,6 +1,6 @@
 #include "connect4.h"
 
-//'x' -> 1 and 'o' -> 0
+// 'x' -> 1 and 'o' -> 0
 
 void game(void)
 {
@@ -23,7 +23,7 @@ void game(void)
       root = new_node(NULL, -1, -1);
 	  root->board = board_dup(board);
       expand(root, 1);
-      aiMove = mcts(root, 10000);
+      aiMove = mcts(root, 25000);
       play_move(board, aiMove, 1);
 	  print_board(board);
 	  free_tree(root);

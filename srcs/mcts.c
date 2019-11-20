@@ -3,13 +3,15 @@
 double	UCB1(t_node *root, t_node *node)
 {
 	double	av_val;
-	double	exp_val;
-
+	double	expl_val;
+	double	const_expl;
+	
 	if (node->nbExp == 0)
 		return (+INFINITY);
-	av_val = (node->value / node->nbExp); //average value
-	exp_val = 100 * sqrt(log(root->nbExp) / node->nbExp); //exploration value
-	return (av_val + exp_val);
+	const_expl = 100; // exploration constant is empirically determined
+	av_val = (node->value / node->nbExp);
+	expl_val = const_expl * sqrt(log(root->nbExp) / node->nbExp);
+	return (av_val + expl_val);
 }
 
 t_node	*selection(t_node *root, t_node *node)
@@ -19,7 +21,7 @@ t_node	*selection(t_node *root, t_node *node)
 	double	bestValue;
 	int		i;
 
-	if (node->children == NULL) //basic case
+	if (node->children == NULL)
 		return (node);
 	bestChild = node->children[0];
 	bestValue = -INFINITY;
@@ -82,7 +84,7 @@ void	back_propagation(t_node *node, int ret)
 	}
 }
 
-int		mcts(t_node *root, int iter) //return the column that seems most interesting
+int		mcts(t_node *root, int iter) // return the best move
 {
 	t_node  *bestNode;
 	int     bestMove;
@@ -93,24 +95,23 @@ int		mcts(t_node *root, int iter) //return the column that seems most interestin
 		bestMove = get_best_move(root);
 		return (bestMove);
 	}
-	bestNode = selection(root, root); //SELECTION
-	if (win(bestNode->board, get_last_move(bestNode))) //PROVEN WIN/LOSS
+	bestNode = selection(root, root);
+	if (win(bestNode->board, get_last_move(bestNode))) // proven win/loss
 	{
 		if (get_skin(bestNode->board, get_last_move(bestNode)) == 'o')
 			bestNode->parent->value = -INFINITY;
 		ret = simulation(board_dup(bestNode->board), get_last_move(bestNode));
 		back_propagation(bestNode, ret);
-		//check article: INFINITY values 
 	}
-	else if (bestNode->nbExp == 0) //NOT EXPLORED YET
+	else if (bestNode->nbExp == 0) // not explored yet
 	{
 		ret = simulation(board_dup(bestNode->board), get_last_move(bestNode));
 		back_propagation(bestNode, ret);
 	}
-	else
+	else // expand the node and simulate from its first child
 	{
 		expand(bestNode, get_player(bestNode->board, get_last_move(bestNode)));
-		ret = simulation(board_dup(bestNode->board), get_last_move(bestNode));
+		ret = simulation(board_dup(bestNode->children[0]->board), get_last_move(bestNode->children[0]));
 		back_propagation(bestNode, ret);
 	}
 	return (mcts(root, iter - 1));

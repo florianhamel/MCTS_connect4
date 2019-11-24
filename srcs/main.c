@@ -23,7 +23,7 @@ void game(void)
       root = new_node(NULL, -1, -1);
 	  root->board = board_dup(board);
       expand(root, 1);
-      aiMove = mcts(root, 25000);
+      aiMove = mcts(root, 15000);
       play_move(board, aiMove, 1);
 	  print_board(board);
 	  free_tree(root);

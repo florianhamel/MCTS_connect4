@@ -113,6 +113,7 @@ int		mcts(t_node *root, int iter) // return the best move
 	else // expand the node and simulate from its first child
 	{
 		expand(bestNode, get_player(bestNode->board, get_last_move(bestNode)));
+		free(board_cpy);
 		board_cpy = board_dup(bestNode->children[0]->board);
 		ret = simulation(board_cpy, get_last_move(bestNode->children[0]));
 		back_propagation(bestNode, ret);

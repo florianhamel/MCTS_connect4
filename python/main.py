@@ -1,6 +1,6 @@
+from state import State
 import numpy as np
 import gc
-from game import State
 
 def	main():
 	board = board = np.full(shape=(6, 7), fill_value=0, dtype='b')

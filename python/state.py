@@ -1,4 +1,4 @@
-import numpy as np
+import numpy, array
 
 class State:
 	def __init__(self, board):
@@ -9,12 +9,11 @@ class State:
 
 	# Setting methods
 	def	setLastPos(self, col):
-		print(self._board)
 		self._lastCol = col
 		row = 0
-		while (row < 6 and self._board[row][self._lastCol] == 0):
+		while row < 6 and self._board[row][self._lastCol] == 0:
 			row += 1
-		if (row == 6):
+		if row == 6:
 			row -= 1
 		self._lastRow = row
 		self._validMousePos = True
@@ -24,40 +23,40 @@ class State:
 
 	# Pygame methods
 	def	setMousePos(self, click_pos, player):
-		if (45 < click_pos[0] and click_pos[0] < 115):
+		if 45 < click_pos[0] and click_pos[0] < 115:
 			self.play(0, player)
-		elif (135 < click_pos[0] and click_pos[0] < 205):
+		elif 135 < click_pos[0] and click_pos[0] < 205:
 			self.play(1, player)
-		elif (225 < click_pos[0] and click_pos[0] < 295):
+		elif 225 < click_pos[0] and click_pos[0] < 295:
 			self.play(2, player)
-		elif (315 < click_pos[0] and click_pos[0] < 385):
+		elif 315 < click_pos[0] and click_pos[0] < 385:
 			self.play(3, player)
-		elif (405 < click_pos[0] and click_pos[0] < 475):
+		elif 405 < click_pos[0] and click_pos[0] < 475:
 			self.play(4, player)
-		elif (495 < click_pos[0] and click_pos[0] < 565):
+		elif 495 < click_pos[0] and click_pos[0] < 565:
 			self.play(5, player)
-		elif (585 < click_pos[0] and click_pos[0] < 655):
+		elif 585 < click_pos[0] and click_pos[0] < 655:
 			self.play(6, player)
 		else:
 			self._validMousePos = False
 
 	def	isValidMousePos(self):
-		return (self._validMousePos)
+		return self._validMousePos
 	
 	def	getTokPos(self):
 		x = 9 + (self._lastCol * 90)
 		y = 430 - ((5 - self._lastRow) * 80)
-		return ((x, y))
+		return (x, y)
 
 	# Game methods
 	def	isAvailable(self, col):
-		if (self._board[0][col] == 0):
-			return (True)
+		if self._board[0][col] == 0:
+			return True
 
 	def	play(self, col, player):
 		i = 0
-		if (self.isAvailable(col)):
-			while (i < 6 and self._board[i][col] == 0):
+		if self.isAvailable(col):
+			while i < 6 and self._board[i][col] == 0:
 				i += 1
 			self._board[i - 1][col] = player
 		else:
@@ -66,89 +65,116 @@ class State:
 		self.setLastPlayer()
 
 	def	isWin(self):
-		if (self._lastCol == -1):
-			return (False)
-		if (self.isWinCol() or self.isWinRow() or self.isWinDiag()):
-			return (True)
-		return (False)
+		if self._lastCol == -1:
+			return False
+		if self.isWinCol() or self.isWinRow() or self.isWinDiag():
+			return True
+		return False
 
 	def isWinCol(self):
-		if (self._lastRow > 2):
-			return (False)
+		if self._lastRow > 2:
+			return False
 		count = 0
 		row = self._lastRow
 		while (row < self._lastRow + 4 and
 		self._board[row][self._lastCol] == self._lastPlayer):
 			count += 1
 			row += 1
-		if (count == 4):
-			return (True)
-		return (False)
+		if count == 4:
+			return True
+		return False
 
 	def isWinRow(self):
 		count = 0
 		col = max(0, self._lastCol - 3)
-		# print(self._lastRow)
-		while (col < min(6, self._lastCol + 3)):
-			if (self._board[self._lastRow][col] == self._lastPlayer):
+		while col < min(6, self._lastCol + 3):
+			if self._board[self._lastRow][col] == self._lastPlayer:
 				count += 1
 			else:
 				count = 0
-			if (count == 4):
-				return (True)
+			if count == 4:
+				return True
 			col += 1
-		return (False)
+		return False
 
 	def isWinDiag(self):
-		if (self.isWinDiagDown() or self.isWinDiagUp()):
-			return (True)
+		if self.isWinDiagDown() or self.isWinDiagUp():
+			return True
 
 	def isWinDiagDown(self):
 		count = 0
 		row = self._lastRow
 		col = self._lastCol
 		i = 0
-		while (i < 4 and row > 0 and col > 0):
+		while i < 4 and row > 0 and col > 0:
 			row -= 1
 			col -= 1
 			i += 1
-		while (row < min(6, self._lastRow + 4) and col < min(7, self._lastCol + 4)):
-			if (self._board[row][col] == self._lastPlayer):
+		while row < min(6, self._lastRow + 4) and col < min(7, self._lastCol + 4):
+			if self._board[row][col] == self._lastPlayer:
 				count += 1
 			else:
 				count = 0
-			if (count == 4):
-				return (True)
+			if count == 4:
+				return True
 			row += 1
 			col += 1
-		return (False)
+		return False
 
 	def isWinDiagUp(self):
 		count = 0
 		row = self._lastRow
 		col = self._lastCol
 		i = 0
-		while (i < 4 and row < 5 and col > 0):
+		while i < 4 and row < 5 and col > 0:
 			row += 1
 			col -= 1
 			i += 1
-		while (row > max(0, self._lastRow - 4) and col < min(7, self._lastCol + 4)):
-			if (self._board[row][col] == self._lastPlayer):
+		while row > max(0, self._lastRow - 4) and col < min(7, self._lastCol + 4):
+			if self._board[row][col] == self._lastPlayer:
 				count += 1
 			else:
 				count = 0
-			if (count == 4):
-				return (True)
+			if count == 4:
+				return True
 			row -= 1
 			col += 1
-		return (False)
+		return False
 
 	def	isDraw(self):
-		return (True)
+		for row in self._board:
+			for val in row:
+				if val == 0:
+					return False
+		return True
 
 	# Getting methods
 	def getBoard(self):
-		return (self._board)
+		return self._board
+	
+	def	getLastCol(self):
+		return self._lastCol
+
+	def	getLastPlayer(self):
+		return self._lastPlayer
+
+	def	getAvailableCols(self):
+		col = 0
+		avail_cols = array.array('b')
+		while col < 7:
+			if self._board[0][col] == 0:
+				avail_cols.append(col)
+			col += 1
+		# print(avail_cols)
+		return avail_cols
+	
+	def	getScore(self):
+		score = 0
+		for row in self._board:
+			for val in row:
+				if val == 0:
+					score += 1
+		return (score)
 
 # board = np.full(shape=(6, 7), fill_value=0, dtype='b')
 # state = State(board)
